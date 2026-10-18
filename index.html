@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172033">
+<title>Minha Ficha de Treino</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f8;color:#172033;
+font:16px/1.5 Arial,sans-serif}
+header{background:#172033;color:white;padding:22px 16px}
+header h1{margin:0;font-size:25px}
+header p{margin:5px 0 0;color:#d5dbea}
+main{max-width:700px;margin:auto;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat,.panel{background:white;border:1px solid #e1e5ec;
+border-radius:12px;padding:13px}
+.stat strong{display:block;font-size:19px}
+.stat span,.muted{color:#667085;font-size:13px}
+.days{display:grid;grid-template-columns:repeat(5,1fr);
+gap:5px;margin:14px 0}
+button{cursor:pointer;font:inherit}
+.day{border:1px solid #cbd5e1;background:white;
+border-radius:9px;padding:12px 2px;font-weight:bold}
+.day.active{background:#2156a5;color:white}
+h2{font-size:21px;margin:0 0 4px}
+.exercise{display:flex;gap:11px;padding:14px 0;
+border-bottom:1px solid #e5e7eb}
+.exercise:last-child{border-bottom:0}
+.exercise input{width:22px;height:22px;flex-shrink:0;
+accent-color:#2156a5;margin-top:2px}
+.exercise label{font-weight:bold}
+.detail{font-size:14px;color:#667085;margin-top:3px}
+.progress{color:#147d4b;font-size:14px;margin-top:12px}
+.panel{margin-top:13px}
+.panel h2{font-size:19px}
+li{margin:8px 0}
+.reset{background:white;border:1px solid #cbd5e1;
+border-radius:8px;padding:9px 12px;margin-top:10px}
+footer{text-align:center;color:#667085;font-size:12px;
+padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>Minha ficha de treino</h1>
+<p>Hipertrofia • Perda de gordura • Segunda a sexta</p>
+</header>
+<main>
+<div class="stats">
+<div class="stat"><strong>50 min</strong><span>Duração total</span></div>
+<div class="stat"><strong>5 min</strong><span>Aquecimento</span></div>
+<div class="stat"><strong>35 min</strong><span>Musculação</span></div>
+<div class="stat"><strong>10 min</strong><span>Cardio + mobilidade</span></div>
+</div>
+
+<nav class="days">
+<button class="day active" data-day="0">SEG</button>
+<button class="day" data-day="1">TER</button>
+<button class="day" data-day="2">QUA</button>
+<button class="day" data-day="3">QUI</button>
+<button class="day" data-day="4">SEX</button>
+</nav>
+
+<section class="panel">
+<h2 id="title"></h2>
+<p class="muted" id="focus"></p>
+<div id="exercises"></div>
+<div class="progress" id="progress"></div>
+<button class="reset" id="reset">Desmarcar exercícios deste dia</button>
+</section>
+
+<section class="panel">
+<h2>Estrutura de cada sessão</h2>
+<ul>
+<li><b>5 min:</b> bicicleta ou caminhada leve.</li>
+<li><b>35 min:</b> musculação conforme a ficha.</li>
+<li><b>7 min:</b> cardio moderado.</li>
+<li><b>3 min:</b> mobilidade leve e controlada.</li>
+</ul>
+</section>
+
+<section class="panel">
+<h2>Como progredir</h2>
+<ul>
+<li>Termine cada série sentindo que conseguiria fazer mais 2–3 repetições.</li>
+<li>Quando completar todas as séries no limite superior das repetições em duas sessões, com boa técnica, aumente um pouco a carga.</li>
+<li>Evite treinar até a falha e não prenda a respiração.</li>
+<li>Se o treino ultrapassar 50 minutos, retire uma série de um acessório em vez de apressar os exercícios.</li>
+</ul>
+</section>
+
+<section class="panel">
+<h2>Cuidados pós-bariátrica</h2>
+<p>Siga a liberação e as orientações da equipe que acompanha sua cirurgia. Evite força abdominal excessiva. Interrompa o treino diante de dor abdominal, tontura, dor no peito ou falta de ar fora do habitual e procure orientação médica.</p>
+</section>
+</main>
+<footer>Ficha pessoal • Sábado e domingo: descanso ou atividade leve conforme tolerância.</footer>
+
+<script>
+const treinos = [
+{
+nome:"Segunda-feira — Inferiores A",
+foco:"Quadríceps e glúteos",
+ex:[
+["Leg press","3 × 8–12 repetições","90 s"],
+["Cadeira extensora","3 × 10–15 repetições","60 s"],
+["Cadeira flexora","3 × 10–15 repetições","60 s"],
+["Cadeira abdutora","2 × 12–15 repetições","45–60 s"],
+["Panturrilha na máquina","2 × 12–15 repetições","45–60 s"]
+]},
+{
+nome:"Terça-feira — Superiores A",
+foco:"Peito, costas, ombros e braços",
+ex:[
+["Supino máquina","3 × 8–12 repetições","75–90 s"],
+["Remada sentada com apoio","3 × 8–12 repetições","75–90 s"],
+["Puxada frontal","3 × 10–12 repetições","60 s"],
+["Desenvolvimento de ombros na máquina","2 × 10–12 repetições","60–75 s"],
+["Tríceps na polia","2 × 10–15 repetições","45–60 s"],
+["Rosca bíceps","2 × 10–15 repetições","45–60 s"]
+]},
+{
+nome:"Quarta-feira — Inferiores B",
+foco:"Posteriores, quadríceps, glúteos e panturrilhas",
+ex:[
+["Leg press","3 × 10–12 repetições","90 s"],
+["Cadeira flexora","3 × 10–12 repetições","60–75 s"],
+["Cadeira extensora","2 × 12–15 repetições","60 s"],
+["Cadeira abdutora","2 × 12–15 repetições","45–60 s"],
+["Panturrilha na máquina","3 × 12–15 repetições","45–60 s"]
+]},
+{
+nome:"Quinta-feira — Superiores B",
+foco:"Peito, costas, ombros e braços",
+ex:[
+["Supino inclinado máquina","3 × 8–12 repetições","75–90 s"],
+["Remada baixa na máquina ou polia","3 × 8–12 repetições","75–90 s"],
+["Puxada frontal com pegada neutra","3 × 10–12 repetições","60 s"],
+["Elevação lateral","2 × 12–15 repetições","45–60 s"],
+["Crucifixo inverso na máquina","2 × 12–15 repetições","45–60 s"],
+["Rosca bíceps","2 × 10–15 repetições","45–60 s"],
+["Tríceps na polia","2 × 10–15 repetições","45–60 s"]
+]},
+{
+nome:"Sexta-feira — Corpo inteiro",
+foco:"Treino geral com fadiga moderada",
+ex:[
+["Leg press","2 × 10–12 repetições","75–90 s"],
+["Supino máquina","2 × 10–12 repetições","60–75 s"],
+["Remada sentada","2 × 10–12 repetições","60–75 s"],
+["Cadeira flexora","2 × 12–15 repetições","60 s"],
+["Elevação lateral leve","2 × 12–15 repetições","45 s"],
+["Rosca bíceps OU tríceps na polia","2 × 12–15 repetições","45–60 s; alterne o exercício a cada semana"]
+]}
+];
+
+let diaAtual=0;
+let marcados={};
+
+try{
+marcados=JSON.parse(localStorage.getItem("minhaFichaTreino")||"{}");
+}catch(e){marcados={};}
+
+function salvar(){
+try{
+localStorage.setItem("minhaFichaTreino",JSON.stringify(marcados));
+}catch(e){}
+}
+
+function mostrarDia(dia){
+diaAtual=dia;
+document.querySelectorAll(".day").forEach(b=>
+b.classList.toggle("active",Number(b.dataset.day)===dia));
+const t=treinos[dia];
+document.getElementById("title").textContent=t.nome;
+document.getElementById("focus").textContent=t.foco;
+const area=document.getElementById("exercises");
+area.replaceChildren();
+
+t.ex.forEach((ex,i)=>{
+const row=document.createElement("div");
+row.className="exercise";
+const cb=document.createElement("input");
+cb.type="checkbox";
+cb.id="ex"+i;
+cb.checked=!!marcados[dia+"-"+i];
+
+const content=document.createElement("div");
+const label=document.createElement("label");
+label.htmlFor=cb.id;
+label.textContent=ex[0];
+
+const detail=document.createElement("div");
+detail.className="detail";
+detail.textContent=ex[1]+" • Descanso: "+ex[2];
+
+cb.addEventListener("change",()=>{
+marcados[dia+"-"+i]=cb.checked;
+salvar();
+atualizarProgresso();
+});
+
+content.append(label,detail);
+row.append(cb,content);
+area.append(row);
+});
+atualizarProgresso();
+}
+
+function atualizarProgresso(){
+const total=treinos[diaAtual].ex.length;
+let feitos=0;
+for(let i=0;i<total;i++){
+if(marcados[diaAtual+"-"+i])feitos++;
+}
+document.getElementById("progress").textContent=
+feitos+" de "+total+" exercícios concluídos";
+}
+
+document.querySelectorAll(".day").forEach(b=>
+b.addEventListener("click",()=>mostrarDia(Number(b.dataset.day))));
+
+document.getElementById("reset").addEventListener("click",()=>{
+treinos[diaAtual].ex.forEach((_,i)=>delete marcados[diaAtual+"-"+i]);
+salvar();
+mostrarDia(diaAtual);
+});
+
+mostrarDia(0);
+</script>
+</body>
+</html>
