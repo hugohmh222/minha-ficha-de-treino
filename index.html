@@ -8,228 +8,363 @@
 <title>Minha Ficha de Treino</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f3f5f8;color:#172033;
-font:16px/1.5 Arial,sans-serif}
-header{background:#172033;color:white;padding:22px 16px}
-header h1{margin:0;font-size:25px}
-header p{margin:5px 0 0;color:#d5dbea}
-main{max-width:700px;margin:auto;padding:14px}
+body{margin:0;background:#f3f5f8;color:#172033;font:16px/1.5 Arial,sans-serif}
+header{background:#172033;color:white;padding:20px 16px}
+header h1{margin:0;font-size:24px}
+header p{margin:5px 0;color:#d5dbea}
+main{max-width:760px;margin:auto;padding:12px}
+nav,.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
+button{font:inherit;cursor:pointer;border:1px solid #cbd5e1;border-radius:9px;padding:10px;background:white;color:#172033}
+button.active,.primary{background:#2156a5;color:white;border-color:#2156a5}
+.panel,.stat{background:white;border:1px solid #e1e5ec;border-radius:12px;padding:14px;margin:10px 0}
+h2{font-size:20px;margin:0 0 8px}
+h3{font-size:16px;margin:10px 0 5px}
+.muted{color:#667085;font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.stat,.panel{background:white;border:1px solid #e1e5ec;
-border-radius:12px;padding:13px}
-.stat strong{display:block;font-size:19px}
-.stat span,.muted{color:#667085;font-size:13px}
-.days{display:grid;grid-template-columns:repeat(5,1fr);
-gap:5px;margin:14px 0}
-button{cursor:pointer;font:inherit}
-.day{border:1px solid #cbd5e1;background:white;
-border-radius:9px;padding:12px 2px;font-weight:bold}
-.day.active{background:#2156a5;color:white}
-h2{font-size:21px;margin:0 0 4px}
-.exercise{display:flex;gap:11px;padding:14px 0;
-border-bottom:1px solid #e5e7eb}
-.exercise:last-child{border-bottom:0}
-.exercise input{width:22px;height:22px;flex-shrink:0;
-accent-color:#2156a5;margin-top:2px}
-.exercise label{font-weight:bold}
-.detail{font-size:14px;color:#667085;margin-top:3px}
-.progress{color:#147d4b;font-size:14px;margin-top:12px}
-.panel{margin-top:13px}
-.panel h2{font-size:19px}
-li{margin:8px 0}
-.reset{background:white;border:1px solid #cbd5e1;
-border-radius:8px;padding:9px 12px;margin-top:10px}
-footer{text-align:center;color:#667085;font-size:12px;
-padding:20px}
+.stat strong{display:block;font-size:21px}
+.exercise{padding:12px 0;border-bottom:1px solid #e5e7eb}
+.exercise:last-child{border:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+label{font-weight:bold;font-size:14px}
+input,select{font:inherit;padding:9px;border:1px solid #cbd5e1;border-radius:7px;max-width:100%;width:100%;min-width:0}
+input[type=checkbox]{width:20px;height:20px}
+.sets{display:grid;grid-template-columns:28px 1fr 1fr 1fr 35px;gap:5px;align-items:center;margin-top:7px}
+.sets small{text-align:center;color:#667085}
+.sets button{padding:6px}
+.progress{color:#147d4b;font-size:14px;margin-top:10px}
+.hidden{display:none!important}
+canvas{width:100%;height:220px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions button{flex:1}
+.daybtn{flex:1;min-width:52px}
+footer{text-align:center;color:#667085;font-size:12px;padding:20px}
+#timer{font-size:36px;font-weight:bold;text-align:center;margin:8px}
+.notice{background:#fff7e6;border:1px solid #f2d18a;padding:10px;border-radius:8px;font-size:13px}
 </style>
 </head>
 <body>
 <header>
 <h1>Minha ficha de treino</h1>
-<p>Hipertrofia • Perda de gordura • Segunda a sexta</p>
+<p>Musculação • Evolução • Histórico pessoal</p>
 </header>
 <main>
 <div class="stats">
-<div class="stat"><strong>50 min</strong><span>Duração total</span></div>
-<div class="stat"><strong>5 min</strong><span>Aquecimento</span></div>
-<div class="stat"><strong>35 min</strong><span>Musculação</span></div>
-<div class="stat"><strong>10 min</strong><span>Cardio + mobilidade</span></div>
+<div class="stat"><strong id="weekCount">0</strong><span class="muted">Treinos nesta semana</span></div>
+<div class="stat"><strong id="sessionCount">0</strong><span class="muted">Sessões registradas</span></div>
 </div>
 
-<nav class="days">
-<button class="day active" data-day="0">SEG</button>
-<button class="day" data-day="1">TER</button>
-<button class="day" data-day="2">QUA</button>
-<button class="day" data-day="3">QUI</button>
-<button class="day" data-day="4">SEX</button>
-</nav>
+<div class="tabs" id="tabs">
+<button class="active" data-tab="treino">Treino</button>
+<button data-tab="historico">Histórico</button>
+<button data-tab="calendario">Calendário</button>
+<button data-tab="backup">Backup</button>
+</div>
 
-<section class="panel">
+<section id="page-treino">
+<nav id="days">
+<button class="daybtn active" data-day="0">SEG</button>
+<button class="daybtn" data-day="1">TER</button>
+<button class="daybtn" data-day="2">QUA</button>
+<button class="daybtn" data-day="3">QUI</button>
+<button class="daybtn" data-day="4">SEX</button>
+</nav>
+<div class="panel">
 <h2 id="title"></h2>
 <p class="muted" id="focus"></p>
+<div class="row">
+<div><label for="sessionDate">Data do treino</label><input id="sessionDate" type="date"></div>
+<div><label for="sessionMinutes">Duração (min)</label><input id="sessionMinutes" type="number" min="1" value="50"></div>
+</div>
 <div id="exercises"></div>
-<div class="progress" id="progress"></div>
-<button class="reset" id="reset">Desmarcar exercícios deste dia</button>
+<p id="progress" class="progress"></p>
+<div class="actions">
+<button class="primary" id="finish">Finalizar e registrar treino</button>
+<button id="clearDay">Limpar registros deste dia</button>
+</div>
+</div>
+
+<div class="panel">
+<h2>Cronômetro de descanso</h2>
+<p class="muted">Escolha um intervalo ou informe o tempo em segundos.</p>
+<div class="row">
+<button data-time="45">45 s</button><button data-time="60">60 s</button>
+<button data-time="75">75 s</button><button data-time="90">90 s</button>
+</div>
+<div id="timer">01:00</div>
+<div class="actions">
+<button class="primary" id="startTimer">Iniciar</button>
+<button id="pauseTimer">Pausar</button>
+<button id="resetTimer">Reiniciar</button>
+</div>
+</div>
+
+<div class="panel">
+<h2>Orientações</h2>
+<p class="muted">Aqueça por 5 minutos, faça a musculação com técnica controlada, finalize com cardio moderado e mobilidade leve. Mantenha cerca de 2–3 repetições em reserva e não prenda a respiração. Respeite a liberação da equipe bariátrica.</p>
+</div>
 </section>
 
-<section class="panel">
-<h2>Estrutura de cada sessão</h2>
-<ul>
-<li><b>5 min:</b> bicicleta ou caminhada leve.</li>
-<li><b>35 min:</b> musculação conforme a ficha.</li>
-<li><b>7 min:</b> cardio moderado.</li>
-<li><b>3 min:</b> mobilidade leve e controlada.</li>
-</ul>
+<section id="page-historico" class="hidden">
+<div class="panel">
+<h2>Evolução de carga</h2>
+<label for="chartExercise">Exercício</label>
+<select id="chartExercise"></select>
+<canvas id="chart" width="700" height="240"></canvas>
+<p class="muted">O gráfico mostra a maior carga registrada em cada sessão concluída para o exercício selecionado.</p>
+</div>
+<div class="panel">
+<h2>Sessões anteriores</h2>
+<div id="historyList"></div>
+</div>
 </section>
 
-<section class="panel">
-<h2>Como progredir</h2>
-<ul>
-<li>Termine cada série sentindo que conseguiria fazer mais 2–3 repetições.</li>
-<li>Quando completar todas as séries no limite superior das repetições em duas sessões, com boa técnica, aumente um pouco a carga.</li>
-<li>Evite treinar até a falha e não prenda a respiração.</li>
-<li>Se o treino ultrapassar 50 minutos, retire uma série de um acessório em vez de apressar os exercícios.</li>
-</ul>
+<section id="page-calendario" class="hidden">
+<div class="panel">
+<h2>Frequência de treinos</h2>
+<label for="month">Mês</label>
+<input type="month" id="month">
+<div id="calendar" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px"></div>
+<p class="muted">Os dias com treino registrado aparecem destacados.</p>
+</div>
 </section>
 
-<section class="panel">
-<h2>Cuidados pós-bariátrica</h2>
-<p>Siga a liberação e as orientações da equipe que acompanha sua cirurgia. Evite força abdominal excessiva. Interrompa o treino diante de dor abdominal, tontura, dor no peito ou falta de ar fora do habitual e procure orientação médica.</p>
+<section id="page-backup" class="hidden">
+<div class="panel">
+<h2>Backup e restauração</h2>
+<p>Exporte seus registros regularmente. Guarde o arquivo em um local seguro.</p>
+<div class="actions">
+<button class="primary" id="export">Exportar backup</button>
+<button id="importBtn">Importar backup</button>
+</div>
+<input id="importFile" type="file" accept=".json,application/json" class="hidden">
+<p id="backupMsg" class="muted"></p>
+<div class="notice">O armazenamento é local neste navegador. Os dados não são sincronizados automaticamente com outros dispositivos. O backup é necessário para recuperar registros após perda dos dados do navegador.</div>
+</div>
 </section>
 </main>
-<footer>Ficha pessoal • Sábado e domingo: descanso ou atividade leve conforme tolerância.</footer>
+<footer>Ficha pessoal • Use cargas compatíveis com sua técnica e orientação profissional.</footer>
 
 <script>
-const treinos = [
-{
-nome:"Segunda-feira — Inferiores A",
-foco:"Quadríceps e glúteos",
-ex:[
-["Leg press","3 × 8–12 repetições","90 s"],
-["Cadeira extensora","3 × 10–15 repetições","60 s"],
-["Cadeira flexora","3 × 10–15 repetições","60 s"],
-["Cadeira abdutora","2 × 12–15 repetições","45–60 s"],
-["Panturrilha na máquina","2 × 12–15 repetições","45–60 s"]
-]},
-{
-nome:"Terça-feira — Superiores A",
-foco:"Peito, costas, ombros e braços",
-ex:[
-["Supino máquina","3 × 8–12 repetições","75–90 s"],
-["Remada sentada com apoio","3 × 8–12 repetições","75–90 s"],
-["Puxada frontal","3 × 10–12 repetições","60 s"],
-["Desenvolvimento de ombros na máquina","2 × 10–12 repetições","60–75 s"],
-["Tríceps na polia","2 × 10–15 repetições","45–60 s"],
-["Rosca bíceps","2 × 10–15 repetições","45–60 s"]
-]},
-{
-nome:"Quarta-feira — Inferiores B",
-foco:"Posteriores, quadríceps, glúteos e panturrilhas",
-ex:[
-["Leg press","3 × 10–12 repetições","90 s"],
-["Cadeira flexora","3 × 10–12 repetições","60–75 s"],
-["Cadeira extensora","2 × 12–15 repetições","60 s"],
-["Cadeira abdutora","2 × 12–15 repetições","45–60 s"],
-["Panturrilha na máquina","3 × 12–15 repetições","45–60 s"]
-]},
-{
-nome:"Quinta-feira — Superiores B",
-foco:"Peito, costas, ombros e braços",
-ex:[
-["Supino inclinado máquina","3 × 8–12 repetições","75–90 s"],
-["Remada baixa na máquina ou polia","3 × 8–12 repetições","75–90 s"],
-["Puxada frontal com pegada neutra","3 × 10–12 repetições","60 s"],
-["Elevação lateral","2 × 12–15 repetições","45–60 s"],
-["Crucifixo inverso na máquina","2 × 12–15 repetições","45–60 s"],
-["Rosca bíceps","2 × 10–15 repetições","45–60 s"],
-["Tríceps na polia","2 × 10–15 repetições","45–60 s"]
-]},
-{
-nome:"Sexta-feira — Corpo inteiro",
-foco:"Treino geral com fadiga moderada",
-ex:[
-["Leg press","2 × 10–12 repetições","75–90 s"],
-["Supino máquina","2 × 10–12 repetições","60–75 s"],
-["Remada sentada","2 × 10–12 repetições","60–75 s"],
-["Cadeira flexora","2 × 12–15 repetições","60 s"],
-["Elevação lateral leve","2 × 12–15 repetições","45 s"],
-["Rosca bíceps OU tríceps na polia","2 × 12–15 repetições","45–60 s; alterne o exercício a cada semana"]
-]}
+const workouts=[
+{nome:"Segunda — Inferiores A",foco:"Quadríceps e glúteos",ex:[
+["Leg press",3,8,12,90],["Cadeira extensora",3,10,15,60],["Cadeira flexora",3,10,15,60],["Cadeira abdutora",2,12,15,60],["Panturrilha na máquina",2,12,15,60]]},
+{nome:"Terça — Superiores A",foco:"Peito, costas, ombros e braços",ex:[
+["Supino máquina",3,8,12,90],["Remada sentada com apoio",3,8,12,90],["Puxada frontal",3,10,12,60],["Desenvolvimento de ombros na máquina",2,10,12,75],["Tríceps na polia",2,10,15,60],["Rosca bíceps",2,10,15,60]]},
+{nome:"Quarta — Inferiores B",foco:"Posteriores, quadríceps, glúteos e panturrilhas",ex:[
+["Leg press",3,10,12,90],["Cadeira flexora",3,10,12,75],["Cadeira extensora",2,12,15,60],["Cadeira abdutora",2,12,15,60],["Panturrilha na máquina",3,12,15,60]]},
+{nome:"Quinta — Superiores B",foco:"Peito, costas, ombros e braços",ex:[
+["Supino inclinado máquina",3,8,12,90],["Remada baixa na máquina ou polia",3,8,12,90],["Puxada frontal com pegada neutra",3,10,12,60],["Elevação lateral",2,12,15,60],["Crucifixo inverso na máquina",2,12,15,60],["Rosca bíceps",2,10,15,60],["Tríceps na polia",2,10,15,60]]},
+{nome:"Sexta — Corpo inteiro",foco:"Treino geral com fadiga moderada",ex:[
+["Leg press",2,10,12,90],["Supino máquina",2,10,12,75],["Remada sentada",2,10,12,75],["Cadeira flexora",2,12,15,60],["Elevação lateral leve",2,12,15,45],["Rosca bíceps OU tríceps na polia",2,12,15,60]]}
 ];
 
-let diaAtual=0;
-let marcados={};
+const KEY="minhaFichaTreinoPlus_v1";
+const OLDKEY="minhaFichaTreino";
+let day=0, timerSeconds=60, timerHandle=null;
+let data={sessions:[],drafts:{}};
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString("en-CA");
+const dateKey=(d)=>d.toISOString().slice(0,10);
 
 try{
-marcados=JSON.parse(localStorage.getItem("minhaFichaTreino")||"{}");
-}catch(e){marcados={};}
-
-function salvar(){
-try{
-localStorage.setItem("minhaFichaTreino",JSON.stringify(marcados));
+ const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+ if(saved && saved.sessions && saved.drafts)data=saved;
 }catch(e){}
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));updateStats();}
+function draftKey(){return $("sessionDate").value+"-"+day;}
+function getDraft(){
+ const key=draftKey();
+ if(!data.drafts[key])data.drafts[key]={sets:{},minutes:50};
+ return data.drafts[key];
 }
-
-function mostrarDia(dia){
-diaAtual=dia;
-document.querySelectorAll(".day").forEach(b=>
-b.classList.toggle("active",Number(b.dataset.day)===dia));
-const t=treinos[dia];
-document.getElementById("title").textContent=t.nome;
-document.getElementById("focus").textContent=t.foco;
-const area=document.getElementById("exercises");
-area.replaceChildren();
-
-t.ex.forEach((ex,i)=>{
-const row=document.createElement("div");
-row.className="exercise";
-const cb=document.createElement("input");
-cb.type="checkbox";
-cb.id="ex"+i;
-cb.checked=!!marcados[dia+"-"+i];
-
-const content=document.createElement("div");
-const label=document.createElement("label");
-label.htmlFor=cb.id;
-label.textContent=ex[0];
-
-const detail=document.createElement("div");
-detail.className="detail";
-detail.textContent=ex[1]+" • Descanso: "+ex[2];
-
-cb.addEventListener("change",()=>{
-marcados[dia+"-"+i]=cb.checked;
-salvar();
-atualizarProgresso();
+function saveDraft(){const d=getDraft();d.minutes=Number($("sessionMinutes").value)||50;save();}
+function render(){
+ const w=workouts[day],d=getDraft();
+ $("title").textContent=w.nome;$("focus").textContent=w.foco;
+ $("sessionMinutes").value=d.minutes||50;
+ $("exercises").replaceChildren();
+ w.ex.forEach((ex,i)=>{
+  const box=document.createElement("div");box.className="exercise";
+  const title=document.createElement("h3");title.textContent=ex[0];box.append(title);
+  const desc=document.createElement("div");desc.className="muted";
+  desc.textContent=ex[1]+" séries • "+ex[2]+"–"+ex[3]+" repetições • descanso "+ex[4]+" s";box.append(desc);
+  const sets=d.sets[i]||[];
+  for(let s=0;s<ex[1];s++){
+   if(!sets[s])sets[s]={kg:"",reps:"",effort:"",done:false};
+   const r=sets[s],line=document.createElement("div");line.className="sets";
+   const num=document.createElement("small");num.textContent=(s+1)+".";
+   const kg=document.createElement("input");kg.type="number";kg.min="0";kg.step="0.5";kg.placeholder="kg";kg.value=r.kg;
+   kg.setAttribute("aria-label","Carga em kg");
+   const reps=document.createElement("input");reps.type="number";reps.min="0";reps.placeholder="Reps";reps.value=r.reps;
+   reps.setAttribute("aria-label","Repetições");
+   const effort=document.createElement("select");effort.setAttribute("aria-label","Esforço");
+   [["","RPE"],["5","5"],["6","6"],["7","7"],["8","8"],["9","9"],["10","10"]].forEach(([v,t])=>{let o=document.createElement("option");o.value=v;o.textContent=t;effort.append(o)});
+   effort.value=r.effort||"";
+   const done=document.createElement("input");done.type="checkbox";done.checked=!!r.done;done.title="Série concluída";
+   [kg,reps,effort,done].forEach(el=>el.addEventListener("change",()=>{
+    r.kg=kg.value;r.reps=reps.value;r.effort=effort.value;r.done=done.checked;
+    d.sets[i]=sets;save();updateProgress();
+   }));
+   line.append(num,kg,reps,effort,done);box.append(line);
+  }
+  d.sets[i]=sets;$("exercises").append(box);
+ });
+ updateProgress();
+}
+function updateProgress(){
+ const d=getDraft();let done=0,total=0;
+ workouts[day].ex.forEach((ex,i)=>{(d.sets[i]||[]).forEach(s=>{total++;if(s.done)done++})});
+ $("progress").textContent=done+" de "+total+" séries concluídas";
+}
+function updateStats(){
+ const now=new Date();const monday=new Date(now);monday.setHours(0,0,0,0);
+ const weekday=(monday.getDay()+6)%7;monday.setDate(monday.getDate()-weekday);
+ const weekEnd=new Date(monday);weekEnd.setDate(weekEnd.getDate()+7);
+ $("weekCount").textContent=new Set(data.sessions.filter(s=>{const dt=new Date(s.date+"T12:00:00");return dt>=monday&&dt<weekEnd}).map(s=>s.date)).size;
+ $("sessionCount").textContent=data.sessions.length;
+}
+$("sessionDate").value=today();
+$("sessionDate").addEventListener("change",()=>{if(!$("sessionDate").value)return;render()});
+$("sessionMinutes").addEventListener("change",saveDraft);
+document.querySelectorAll("[data-day]").forEach(b=>b.addEventListener("click",()=>{
+ day=Number(b.dataset.day);
+ document.querySelectorAll("[data-day]").forEach(x=>x.classList.toggle("active",x===b));
+ render();
+}));
+$("clearDay").addEventListener("click",()=>{
+ if(!confirm("Limpar as séries deste dia e data?"))return;
+ delete data.drafts[draftKey()];save();render();
 });
-
-content.append(label,detail);
-row.append(cb,content);
-area.append(row);
+$("finish").addEventListener("click",()=>{
+ const d=getDraft(),w=workouts[day];
+ let sets=[],total=0,done=0;
+ w.ex.forEach((ex,i)=>(d.sets[i]||[]).forEach(s=>{total++;if(s.done)done++;if(s.kg!==""||s.reps!=="")sets.push({exercise:ex[0],kg:Number(s.kg)||0,reps:Number(s.reps)||0,effort:s.effort,done:s.done})}));
+ if(!done){alert("Marque ao menos uma série como concluída antes de registrar.");return}
+ const record={id:Date.now(),date:$("sessionDate").value,day,nome:w.nome,minutes:Number($("sessionMinutes").value)||50,done,total,sets};
+ data.sessions.push(record);save();alert("Treino registrado no histórico.");renderHistory();renderCalendar();renderChart();showPage("historico");
 });
-atualizarProgresso();
+function showPage(p){
+ ["treino","historico","calendario","backup"].forEach(x=>$("page-"+x).classList.toggle("hidden",x!==p));
+ document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===p));
+ if(p==="historico"){renderHistory();renderChart()}
+ if(p==="calendario")renderCalendar();
 }
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.tab)));
 
-function atualizarProgresso(){
-const total=treinos[diaAtual].ex.length;
-let feitos=0;
-for(let i=0;i<total;i++){
-if(marcados[diaAtual+"-"+i])feitos++;
+function allExercises(){return [...new Set(workouts.flatMap(w=>w.ex.map(e=>e[0])))].sort()}
+function renderHistory(){
+ const area=$("historyList");area.replaceChildren();
+ const sessions=[...data.sessions].sort((a,b)=>b.date.localeCompare(a.date));
+ if(!sessions.length){area.textContent="Nenhum treino registrado ainda.";return}
+ sessions.forEach(s=>{
+  const box=document.createElement("div");box.className="exercise";
+  const h=document.createElement("b");h.textContent=s.date+" — "+s.nome;box.append(h);
+  const p=document.createElement("p");p.className="muted";p.textContent=s.done+" séries concluídas • "+s.minutes+" min";box.append(p);
+  const del=document.createElement("button");del.textContent="Excluir registro";
+  del.addEventListener("click",()=>{if(confirm("Excluir esta sessão do histórico?")){data.sessions=data.sessions.filter(x=>x.id!==s.id);save();renderHistory();renderChart();renderCalendar()}});
+  box.append(del);area.append(box);
+ });
 }
-document.getElementById("progress").textContent=
-feitos+" de "+total+" exercícios concluídos";
+function renderChart(){
+ const sel=$("chartExercise"),old=sel.value;
+ sel.replaceChildren();allExercises().forEach(name=>{const o=document.createElement("option");o.value=name;o.textContent=name;sel.append(o)});
+ if(allExercises().includes(old))sel.value=old;
+ const name=sel.value,canvas=$("chart"),ctx=canvas.getContext("2d");
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const pts=[];
+ [...data.sessions].sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>{
+  const vals=s.sets.filter(x=>x.exercise===name&&x.done&&x.kg>0).map(x=>x.kg);
+  if(vals.length)pts.push({date:s.date,value:Math.max(...vals)});
+ });
+ ctx.fillStyle="#667085";ctx.font="13px Arial";
+ if(!pts.length){ctx.fillText("Registre séries concluídas com carga para ver o gráfico.",10,35);return}
+ const max=Math.max(...pts.map(p=>p.value))*1.15||1;
+ ctx.beginPath();ctx.strokeStyle="#2156a5";ctx.lineWidth=3;
+ pts.forEach((p,i)=>{
+  const x=25+i*(canvas.width-50)/Math.max(pts.length-1,1);
+  const y=canvas.height-35-(p.value/max)*(canvas.height-65);
+  if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ });ctx.stroke();
+ pts.forEach((p,i)=>{
+  const x=25+i*(canvas.width-50)/Math.max(pts.length-1,1);
+  const y=canvas.height-35-(p.value/max)*(canvas.height-65);
+  ctx.fillStyle="#2156a5";ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#172033";ctx.fillText(p.value+" kg",Math.max(0,x-14),y-10);
+  ctx.fillStyle="#667085";ctx.fillText(p.date.slice(5),Math.max(0,x-18),canvas.height-12);
+ });
 }
+$("chartExercise").addEventListener("change",renderChart);
 
-document.querySelectorAll(".day").forEach(b=>
-b.addEventListener("click",()=>mostrarDia(Number(b.dataset.day))));
-
-document.getElementById("reset").addEventListener("click",()=>{
-treinos[diaAtual].ex.forEach((_,i)=>delete marcados[diaAtual+"-"+i]);
-salvar();
-mostrarDia(diaAtual);
+$("month").value=today().slice(0,7);
+$("month").addEventListener("change",renderCalendar);
+function renderCalendar(){
+ const area=$("calendar");area.replaceChildren();
+ const month=$("month").value||today().slice(0,7);
+ const [y,m]=month.split("-").map(Number);
+ ["D","S","T","Q","Q","S","S"].forEach(t=>{const el=document.createElement("div");el.textContent=t;el.style.textAlign="center";el.className="muted";area.append(el)});
+ const first=new Date(y,m-1,1).getDay(),days=new Date(y,m,0).getDate();
+ const dates=new Set(data.sessions.map(s=>s.date));
+ for(let i=0;i<first;i++)area.append(document.createElement("div"));
+ for(let d=1;d<=days;d++){
+  const date=y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+  const b=document.createElement("button");b.textContent=d;b.style.padding="7px 0";
+  if(dates.has(date)){b.style.background="#d9f4e5";b.style.borderColor="#147d4b"}
+  if(date===today())b.style.border="2px solid #2156a5";
+  b.title=dates.has(date)?"Treino registrado":"Sem treino registrado";
+  area.append(b);
+ }
+}
+$("export").addEventListener("click",()=>{
+ const backup={format:"minha-ficha-treino-backup",version:1,exportedAt:new Date().toISOString(),data,legacy:localStorage.getItem(OLDKEY)};
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="backup-ficha-treino-"+today()+".json";a.click();URL.revokeObjectURL(url);
+ $("backupMsg").textContent="Backup exportado. Guarde o arquivo em local seguro.";
 });
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const obj=JSON.parse(await file.text());
+  if(!obj.data||!Array.isArray(obj.data.sessions)||!obj.data.drafts)throw Error("Formato inválido");
+  if(!confirm("A importação substituirá os registros atuais. Faça um backup antes. Continuar?"))return;
+  data=obj.data;save();render();renderHistory();renderCalendar();renderChart();
+  $("backupMsg").textContent="Backup restaurado com sucesso.";
+ }catch(err){alert("Não foi possível importar. Selecione um backup válido desta ficha.")}
+ e.target.value="";
+});
+document.querySelectorAll("[data-time]").forEach(b=>b.addEventListener("click",()=>setTimer(Number(b.dataset.time))));
+function setTimer(n){timerSeconds=n;updateTimer();if(timerHandle){clearInterval(timerHandle);timerHandle=null}}
+function updateTimer(){$("timer").textContent=String(Math.floor(timerSeconds/60)).padStart(2,"0")+":"+String(timerSeconds%60).padStart(2,"0")}
+$("startTimer").addEventListener("click",()=>{
+ if(timerHandle)return;
+ timerHandle=setInterval(()=>{
+  if(timerSeconds>0){timerSeconds--;updateTimer()}
+  else{clearInterval(timerHandle);timerHandle=null;alert("Descanso concluído!")}
+ },1000);
+});
+$("pauseTimer").addEventListener("click",()=>{clearInterval(timerHandle);timerHandle=null});
+$("resetTimer").addEventListener("click",()=>setTimer(60));
 
-mostrarDia(0);
+// Compatibilidade com a versão anterior: importa as marcações antigas
+// sem apagá-las nem modificar a chave original.
+try{
+ const old=JSON.parse(localStorage.getItem(OLDKEY)||"{}");
+ const d=getDraft();
+ workouts.forEach((w,di)=>w.ex.forEach((ex,i)=>{
+  const oldValue=old[di+"-"+i];
+  if(oldValue && !d.sets[i]){
+   d.sets[i]=Array.from({length:ex[1]},(_,s)=>({kg:"",reps:"",effort:"",done:s===0&&!!oldValue}));
+  }else if(oldValue&&d.sets[i]&&!d.sets[i].some(s=>s.done)){
+   d.sets[i][0].done=true;
+  }
+ }));
+ save();
+}catch(e){}
+
+render();updateStats();updateTimer();
 </script>
 </body>
 </html>
